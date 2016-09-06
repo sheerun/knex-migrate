@@ -6,11 +6,13 @@
 
 ## Features
 
-- [x] 100% compatible with knex.js migration toolkit
+- [x] 100% compatible with knex.js [migrations cli](http://knexjs.org/#Migrations)
 - [x] can migrate upto and downto any migration
 - [x] able to run individual migrations
 - [x] quickly rollback recent migrations
 - [x] redo feature: rollback and migrate again for quick testing
+- [x] runs migrations in transactions
+- [x] friendly ui 🌹
 
 ## Installation
 
