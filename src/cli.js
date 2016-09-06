@@ -2,12 +2,18 @@
 
 import { join } from 'path'
 import { existsSync } from 'fs'
-import reqCwd from 'req-cwd'
+import reqFrom from 'req-from'
 import meow from 'meow'
 import Umzug from 'umzug'
 import { maxBy, minBy, filter, omitBy, isNil } from 'lodash'
 
-const knex = reqCwd('knex')
+const knex = reqFrom.silent(process.cwd(), 'knex')
+
+if (isNil(knex)) {
+  console.error(`Knex not found in '${process.cwd()}'`)
+  console.error('Please install it as local dependency with \'npm install --save knex\'')
+  process.exit(1)
+}
 
 const cli = meow(`
   Usage

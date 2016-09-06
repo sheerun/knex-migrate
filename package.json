@@ -10,7 +10,7 @@
     "invariant": "^2.2.1",
     "lodash": "^4.15.0",
     "meow": "^3.7.0",
-    "req-cwd": "^1.0.1",
+    "req-from": "^1.0.1",
     "umzug": "^1.11.0"
   },
   "peerDependencies": {
@@ -25,6 +25,7 @@
     "babel-register": "^6.14.0",
     "babel-watch": "^2.0.2",
     "cross-run": "^1.0.1",
+    "knex": "^0.11.10",
     "np": "^2.9.0",
     "xo": "^0.16.0"
   },
