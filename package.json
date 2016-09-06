@@ -10,6 +10,7 @@
     "invariant": "^2.2.1",
     "lodash": "^4.15.0",
     "meow": "^3.7.0",
+    "req-cwd": "^1.0.1",
     "umzug": "^1.11.0"
   },
   "peerDependencies": {

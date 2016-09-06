@@ -2,10 +2,12 @@
 
 import { join } from 'path'
 import { existsSync } from 'fs'
+import reqCwd from 'req-cwd'
 import meow from 'meow'
 import Umzug from 'umzug'
-import knex from 'knex'
 import { maxBy, minBy, filter, omitBy, isNil } from 'lodash'
+
+const knex = reqCwd('knex')
 
 const cli = meow(`
   Usage
@@ -24,9 +26,12 @@ const cli = meow(`
     --from, -f  Start migration from specific version
     --only, -o  Migrate only specific version
 
+  As a convenience, you can skip --to flag, and just provide migration name.
+
   Examples
     $ knex-migrate up                  # migrate everytings
-    $ knex-migrate up --to 20160905    # migrate upto given migration
+    $ knex-migrate up 20160905         # migrate upto given migration name
+    $ knex-migrate up --to 20160905    # the same as above
     $ knex-migrate up --only 201609085 # migrate up single migration
     $ knex-migrate down --to 0         # rollback all migrations
     $ knex-migrate down                # rollback single migration
@@ -95,12 +100,24 @@ function help() {
 }
 
 function umzugOptions() {
+  if (isNil(cli.flags.to) && !isNil(cli.input[1])) {
+    cli.flags.to = cli.input[1]
+  }
+
   if (isNil(cli.flags.to) && isNil(cli.flags.from)) {
     if (isNil(cli.flags.only)) {
       return {}
     }
 
     return cli.flags.only
+  }
+
+  if (cli.flags.to === '0') {
+    cli.flags.to = 0
+  }
+
+  if (cli.flags.from === '0') {
+    cli.flags.from = 0
   }
 
   return omitBy({ to: cli.flags.to, from: cli.flags.from }, isNil)
