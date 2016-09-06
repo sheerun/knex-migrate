@@ -22,7 +22,7 @@ npm install --save knex-migrate
 
 ## Usage
 
-First, init project with `knex init`, and migrations with `knex migrate:make`, and:
+First, init project with `knex init`, add migrations with `knex migrate:make`, and then:
 
 ```
 Usage
