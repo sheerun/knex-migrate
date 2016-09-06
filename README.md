@@ -22,6 +22,8 @@
 npm install --save knex-migrate
 ```
 
+You should also install `knex` as it's a peer dependency of this package.
+
 ## Usage
 
 First, init project with `knex init`, add migrations with `knex migrate:make`, and then:
