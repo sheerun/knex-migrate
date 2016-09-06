@@ -24,6 +24,7 @@
     "babel-register": "^6.14.0",
     "babel-watch": "^2.0.2",
     "cross-run": "^1.0.1",
+    "np": "^2.9.0",
     "xo": "^0.16.0"
   },
   "scripts": {

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 scripts/build
+np "$@"
 rimraf lib
