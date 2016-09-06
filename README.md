@@ -1,8 +1,16 @@
-![Modern Node Boilerplate](http://i.imgur.com/pjJiLok.png)
+![Modern Node Boilerplate](http://i.imgur.com/MMWMf5T.png)
 
 [![Modern Node](https://img.shields.io/badge/modern-node-9BB48F.svg)](https://github.com/sheerun/modern-node)
 
 > Modern migration toolkit for knex.js
+
+## Features
+
+- [x] 100% compatible with knex.js migration toolkit
+- [x] can migrate upto and downto any migration
+- [x] able to run individual migrations
+- [x] quickly rollback recent migrations
+- [x] redo feature: rollback and migrate again for quick testing
 
 ## Installation
 
