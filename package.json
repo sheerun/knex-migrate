@@ -1,0 +1,65 @@
+{
+  "name": "knex-migrate",
+  "version": "1.0.0",
+  "license": "MIT",
+  "bin": "lib/cli.js",
+  "author": "Adam Stankiewicz <sheerun@sher.pl>",
+  "repository": "sheerun/knex-migrate",
+  "dependencies": {
+    "babel-runtime": "^6.11.6",
+    "invariant": "^2.2.1",
+    "lodash": "^4.15.0",
+    "meow": "^3.7.0",
+    "umzug": "^1.11.0"
+  },
+  "peerDependencies": {
+    "knex": "*"
+  },
+  "devDependencies": {
+    "ava": "^0.16.0",
+    "babel-cli": "^6.14.0",
+    "babel-plugin-transform-runtime": "^6.12.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-es2017": "^6.14.0",
+    "babel-register": "^6.14.0",
+    "babel-watch": "^2.0.2",
+    "cross-run": "^1.0.1",
+    "xo": "^0.16.0"
+  },
+  "scripts": {
+    "test": "ava",
+    "lint": "xo src/*"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "es2017"
+    ],
+    "plugins": [
+      "transform-runtime"
+    ]
+  },
+  "ava": {
+    "babel": "inherit",
+    "require": [
+      "babel-register"
+    ]
+  },
+  "xo": {
+    "space": true,
+    "semicolon": false,
+    "esnext": true,
+    "rules": {
+      "xo/no-process-exit": [
+        "off"
+      ],
+      "babel/object-curly-spacing": [
+        "error",
+        "always"
+      ]
+    }
+  },
+  "files": [
+    "lib"
+  ]
+}

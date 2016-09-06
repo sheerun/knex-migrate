@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+babel src --out-dir lib
+find lib -name '*.test.js' | xargs rm
