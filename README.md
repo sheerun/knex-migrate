@@ -58,6 +58,10 @@ Examples
   $ knex-migrate redo                # rollback and migrate everything
 ```
 
+## Thank you
+
+- @marcbachmann for inspiration and starting point ([knex-umzug](https://github.com/marcbachmann/knex-umzug) and [umzug-cli](https://github.com/marcbachmann/umzug-cli))
+
 ## License
 
 MIT
