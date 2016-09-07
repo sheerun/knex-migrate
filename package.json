@@ -5,6 +5,7 @@
   "bin": "lib/cli.js",
   "author": "Adam Stankiewicz <sheerun@sher.pl>",
   "repository": "sheerun/knex-migrate",
+  "description": "Modern migration toolkit for knex.js",
   "dependencies": {
     "babel-runtime": "^6.11.6",
     "invariant": "^2.2.1",

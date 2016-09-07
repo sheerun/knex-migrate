@@ -1,4 +1,4 @@
-![Modern Node Boilerplate](http://i.imgur.com/MMWMf5T.png)
+![Knex Migrate](http://i.imgur.com/MMWMf5T.png)
 
 [![Unix CI](https://img.shields.io/travis/sheerun/knex-migrate/master.svg)](https://travis-ci.org/sheerun/knex-migrate)
 [![Windows CI](https://img.shields.io/appveyor/ci/sheerun/knex-migrate/master.svg)](https://ci.appveyor.com/project/sheerun/knex-migrate)
