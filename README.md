@@ -60,7 +60,7 @@ Examples
 
 ## Thank you
 
-- @marcbachmann for inspiration and starting point ([knex-umzug](https://github.com/marcbachmann/knex-umzug) and [umzug-cli](https://github.com/marcbachmann/umzug-cli))
+- [@marcbachmann](https://github.com/marcbachmann) for inspiration and starting point ([knex-umzug](https://github.com/marcbachmann/knex-umzug) and [umzug-cli](https://github.com/marcbachmann/umzug-cli))
 
 ## License
 
