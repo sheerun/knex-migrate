@@ -6,6 +6,7 @@ import reqFrom from 'req-from'
 import meow from 'meow'
 import Umzug from 'umzug'
 import { maxBy, minBy, filter, omitBy, isNil } from 'lodash'
+import Promise from 'bluebird'
 
 const knex = reqFrom.silent(process.cwd(), 'knex')
 
