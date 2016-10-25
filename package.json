@@ -34,7 +34,9 @@
   },
   "scripts": {
     "test": "ava",
-    "lint": "xo src/*"
+    "lint": "xo src/*",
+    "build": "run ./scripts/build",
+    "cli": "run ./scripts/cli"
   },
   "babel": {
     "presets": [

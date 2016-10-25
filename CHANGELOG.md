@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.2.0
 
 ### Changed
 
@@ -11,6 +11,6 @@
 
 - `cwd`, `knexfile`, `migrations`, `table`, `env`, and `verbose` flags
 
-# 1.1.2
+## 1.1.2
 
 First truly public version
