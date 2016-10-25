@@ -1,10 +1,6 @@
 import invariant from 'invariant'
 import { get } from 'lodash'
 
-function isString(s) {
-  return typeof s === 'string'
-}
-
 function tableDoesNotExist(err, table) {
   return new RegExp(`relation "${table}" does not exist`).test(err.message) ||
          new RegExp(`no such table: ${table}`).test(err.message)
@@ -14,7 +10,6 @@ module.exports = class KnexStorage {
   constructor(options) {
     this.knex = options.storageOptions.connection
     this.tableName = get(this.knex, 'client.config.migrations.tableName', 'knex_migrations')
-    invariant(isString(this.tableName), 'The option \'options.storageOptions.tableName\' is required.')
     invariant(this.knex, 'The option \'options.storageOptions.connection\' is required.')
   }
 

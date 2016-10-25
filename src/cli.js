@@ -1,20 +1,13 @@
 #!/usr/bin/env node
 
-import { join } from 'path'
+import { resolve, dirname, isAbsolute } from 'path'
 import { existsSync } from 'fs'
 import reqFrom from 'req-from'
 import meow from 'meow'
 import Umzug from 'umzug'
 import { maxBy, minBy, filter, omitBy, isNil } from 'lodash'
+import * as prettyjson from 'prettyjson'
 import Promise from 'bluebird'
-
-const knex = reqFrom.silent(process.cwd(), 'knex')
-
-if (isNil(knex)) {
-  console.error(`Knex not found in '${process.cwd()}'`)
-  console.error('Please install it as local dependency with \'npm install --save knex\'')
-  process.exit(1)
-}
 
 const cli = meow(`
   Usage
@@ -33,6 +26,13 @@ const cli = meow(`
     --from, -f  Start migration from specific version
     --only, -o  Migrate only specific version
 
+  Global options:
+    --cwd         Specify the working directory
+    --knexfile    Specify the knexfile path ($cwd/knexfile.js)
+    --migrations  Specify migrations path ($cwd/migrations)
+    --env         Specify environment ($KNEX_ENV || $NODE_ENV || 'development')
+    --verbose     Be more verbose
+
   As a convenience, you can skip --to flag, and just provide migration name.
 
   Examples
@@ -43,26 +43,53 @@ const cli = meow(`
     $ knex-migrate down --to 0         # rollback all migrations
     $ knex-migrate down                # rollback single migration
     $ knex-migrate rollback            # rollback previous "up"
-    $ knex-migrate redo                # rollback and migrate everything
-`, {
-  alias: {
-    to: 't',
-    from: 'f',
-    only: 'o'
-  },
-  string: ['to', 'from', 'only']
-})
+    $ knex-migrate redo --verbose      # rollback and migrate everything
+ `, {
+   alias: {
+     to: 't',
+     from: 'f',
+     only: 'o'
+   },
+   string: ['to', 'from', 'only']
+ })
 
-function config() {
-  const knexPath = join(process.cwd(), 'knexfile.js')
+function normalizeFlags(flags) {
+  if (isAbsolute(flags.knexfile || '') && !flags.cwd) {
+    flags.cwd = dirname(flags.knexfile)
+  }
 
-  let environments
+  if (isAbsolute(flags.migrations || '') && !flags.cwd) {
+    flags.cwd = dirname(flags.migrations)
+  }
+
+  flags.cwd = flags.cwd || process.cwd()
+  flags.knexfile = flags.knexfile || 'knexfile.js'
+  flags.migrations = flags.migrations || 'migrations'
+
+  flags.knexfile = resolve(flags.cwd, flags.knexfile)
+  flags.migrations = resolve(flags.cwd, flags.migrations)
+
+  flags.env = flags.env || process.env.KNEX_ENV || process.env.NODE_ENV || 'development'
+}
+
+function knexInit(flags) {
+  normalizeFlags(flags)
+
+  const knex = reqFrom.silent(flags.cwd, 'knex')
+
+  if (isNil(knex)) {
+    console.error(`Knex not found in '${flags.cwd}'`)
+    console.error('Please install it as local dependency with \'npm install --save knex\'')
+    process.exit(1)
+  }
+
+  let config
 
   try {
-    environments = require(knexPath)
+    config = require(flags.knexfile)
   } catch (err) {
     if (/Cannot find module/.test(err.message)) {
-      console.error(`No knexfile at '${knexPath}'`)
+      console.error(`No knexfile at '${flags.knexfile}'`)
       console.error('Please create one or bootstrap using \'knex init\'')
       process.exit(1)
     }
@@ -70,31 +97,37 @@ function config() {
     throw err
   }
 
-  const migrationsPath = join(process.cwd(), 'migrations')
-
-  if (!existsSync(migrationsPath)) {
-    console.error(`No migrations directory at '${migrationsPath}'`)
+  if (!existsSync(flags.migrations)) {
+    console.error(`No migrations directory at '${flags.migrations}'`)
     console.error('Please create your first migration with \'knex migrate:make <name>\'')
     process.exit(1)
   }
 
-  if (process.env.NODE_ENV) {
-    return environments[process.env.NODE_ENV]
+  if (config[flags.env] && config[flags.env]) {
+    config = config[flags.env]
   }
 
-  return environments.development
+  if (typeof config !== 'object') {
+    console.log(`Malformed knexfile.js:`)
+    console.log(JSON.stringify(config, null, 2))
+    process.exit(1)
+  }
+
+  if (flags.verbose) {
+    const environment = Object.assign({}, flags, { config })
+    console.log(prettyjson.render(environment, { noColor: true }))
+  }
+
+  return knex(config)
 }
 
 function umzugKnex(connection) {
   return new Umzug({
-    storage: join(__dirname, 'storage'),
-    storageOptions: {
-      tableName: 'migrations',
-      connection
-    },
+    storage: resolve(__dirname, 'storage'),
+    storageOptions: { connection },
     migrations: {
       params: [connection, Promise],
-      path: 'migrations',
+      path: cli.flags.migrations,
       pattern: /^\d+[\w-_]+\.js$/,
       wrap: fn => (knex, Promise) => knex.transaction(tx => Promise.resolve(fn(tx, Promise)))
     }
@@ -131,46 +164,39 @@ function umzugOptions() {
 }
 
 async function main() {
-  try {
-    if (cli.input.length < 1 && !cli.flags.list) {
-      help()
-    }
+  if (cli.input.length < 1 && !cli.flags.list) {
+    help()
+  }
 
-    const umzug = umzugKnex(knex(config()))
+  const umzug = umzugKnex(knexInit(cli.flags))
 
-    await umzug.storage.ensureTable()
+  await umzug.storage.ensureTable()
 
-    const api = createApi(process.stdout, umzug)
+  const api = createApi(process.stdout, umzug)
 
-    const command = cli.input[0]
+  const command = cli.input[0]
 
-    switch (command) {
-      case 'list':
-        await api.history()
-        break
-      case 'pending':
-        await api.pending()
-        break
-      case 'down':
-        await api.down(umzugOptions())
-        break
-      case 'up':
-        await api.up(umzugOptions())
-        break
-      case 'rollback':
-        await api.rollback()
-        break
-      case 'redo':
-        await api.redo()
-        break
-      default:
-        console.log(cli.help)
-    }
-
-    process.exit(0)
-  } catch (err) {
-    console.error(err.message)
-    process.exit(1)
+  switch (command) {
+    case 'list':
+      await api.history()
+      break
+    case 'pending':
+      await api.pending()
+      break
+    case 'down':
+      await api.down(umzugOptions())
+      break
+    case 'up':
+      await api.up(umzugOptions())
+      break
+    case 'rollback':
+      await api.rollback()
+      break
+    case 'redo':
+      await api.redo()
+      break
+    default:
+      console.log(cli.help)
   }
 }
 
@@ -238,4 +264,13 @@ function createDebug(stdout) {
   }
 }
 
-main()
+main().then(() => {
+  process.exit(0)
+}, err => {
+  if (cli.flags.verbose) {
+    console.error(err.stack)
+  } else {
+    console.error(err.message)
+  }
+  process.exit(1)
+})

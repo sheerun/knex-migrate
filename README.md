@@ -45,6 +45,13 @@ Options for "up" and "down":
   --from, -f  Start migration from specific version
   --only, -o  Migrate only specific version
 
+Global options:
+  --cwd         Specify the working directory
+  --knexfile    Specify the knexfile path ($cwd/knexfile.js)
+  --migrations  Specify migrations path ($cwd/migrations)
+  --env         Specify environment ($KNEX_ENV || $NODE_ENV || 'development')
+  --verbose     Be more verbose
+
 As a convenience, you can skip --to flag, and just provide migration name.
 
 Examples
@@ -55,7 +62,7 @@ Examples
   $ knex-migrate down --to 0         # rollback all migrations
   $ knex-migrate down                # rollback single migration
   $ knex-migrate rollback            # rollback previous "up"
-  $ knex-migrate redo                # rollback and migrate everything
+  $ knex-migrate redo --verbose      # rollback and migrate everything
 ```
 
 ## Thank you
