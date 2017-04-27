@@ -50,13 +50,13 @@ module.exports = class KnexStorage {
     return this
       .knex(this.tableName)
       .select()
-      .orderBy('migration_time', 'asc')
+      .orderBy('id', 'asc')
   }
 
   executed() {
     return this
       .knex(this.tableName)
-      .orderBy('migration_time', 'asc')
+      .orderBy('id', 'asc')
       .pluck('name')
   }
 
