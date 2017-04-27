@@ -30,11 +30,11 @@
     "cross-run": "^1.0.1",
     "knex": "^0.12.6",
     "np": "^2.9.0",
-    "xo": "^0.17.0"
+    "prettier-standard": "^4.1.0"
   },
   "scripts": {
     "test": "ava",
-    "lint": "xo src/*",
+    "format": "prettier-standard src/*.js",
     "build": "run ./scripts/build",
     "cli": "run ./scripts/cli"
   },
@@ -52,20 +52,6 @@
     "require": [
       "babel-register"
     ]
-  },
-  "xo": {
-    "space": true,
-    "semicolon": false,
-    "esnext": true,
-    "rules": {
-      "xo/no-process-exit": [
-        "off"
-      ],
-      "babel/object-curly-spacing": [
-        "error",
-        "always"
-      ]
-    }
   },
   "files": [
     "lib"

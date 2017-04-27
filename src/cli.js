@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 
-import { resolve, dirname, isAbsolute } from 'path'
-import { existsSync } from 'fs'
+import {resolve, dirname, isAbsolute} from 'path'
+import {existsSync} from 'fs'
 import reqFrom from 'req-from'
 import meow from 'meow'
 import Umzug from 'umzug'
-import { maxBy, minBy, filter, omitBy, isNil } from 'lodash'
+import {maxBy, minBy, filter, omitBy, isNil} from 'lodash'
 import * as prettyjson from 'prettyjson'
 import Promise from 'bluebird'
 
-const cli = meow(`
+const cli = meow(
+  `
   Usage
     $ knex-migrate <command> [options]
 
@@ -44,16 +45,18 @@ const cli = meow(`
     $ knex-migrate down                # rollback single migration
     $ knex-migrate rollback            # rollback previous "up"
     $ knex-migrate redo --verbose      # rollback and migrate everything
- `, {
-   alias: {
-     to: 't',
-     from: 'f',
-     only: 'o'
-   },
-   string: ['to', 'from', 'only']
- })
+ `,
+  {
+    alias: {
+      to: 't',
+      from: 'f',
+      only: 'o'
+    },
+    string: ['to', 'from', 'only']
+  }
+)
 
-function normalizeFlags(flags) {
+function normalizeFlags (flags) {
   if (isAbsolute(flags.knexfile || '') && !flags.cwd) {
     flags.cwd = dirname(flags.knexfile)
   }
@@ -67,17 +70,20 @@ function normalizeFlags(flags) {
 
   flags.knexfile = resolve(flags.cwd, flags.knexfile)
 
-  flags.env = flags.env || process.env.KNEX_ENV || process.env.NODE_ENV || 'development'
+  flags.env =
+    flags.env || process.env.KNEX_ENV || process.env.NODE_ENV || 'development'
 }
 
-function knexInit(flags) {
+function knexInit (flags) {
   normalizeFlags(flags)
 
   const knex = reqFrom.silent(flags.cwd, 'knex')
 
   if (isNil(knex)) {
     console.error(`Knex not found in '${flags.cwd}'`)
-    console.error('Please install it as local dependency with \'npm install --save knex\'')
+    console.error(
+      "Please install it as local dependency with 'npm install --save knex'"
+    )
     process.exit(1)
   }
 
@@ -88,7 +94,7 @@ function knexInit(flags) {
   } catch (err) {
     if (/Cannot find module/.test(err.message)) {
       console.error(`No knexfile at '${flags.knexfile}'`)
-      console.error('Please create one or bootstrap using \'knex init\'')
+      console.error("Please create one or bootstrap using 'knex init'")
       process.exit(1)
     }
 
@@ -105,42 +111,48 @@ function knexInit(flags) {
     process.exit(1)
   }
 
-  flags.migrations = flags.migrations || (config.migrations && config.migrations.directory) || 'migrations'
+  flags.migrations =
+    flags.migrations ||
+    (config.migrations && config.migrations.directory) ||
+    'migrations'
   flags.migrations = resolve(flags.cwd, flags.migrations)
 
   if (!existsSync(flags.migrations)) {
     console.error(`No migrations directory at '${flags.migrations}'`)
-    console.error('Please create your first migration with \'knex migrate:make <name>\'')
+    console.error(
+      "Please create your first migration with 'knex migrate:make <name>'"
+    )
     process.exit(1)
   }
 
   if (flags.verbose) {
-    const environment = Object.assign({}, flags, { config })
-    console.log(prettyjson.render(environment, { noColor: true }))
+    const environment = Object.assign({}, flags, {config})
+    console.log(prettyjson.render(environment, {noColor: true}))
   }
 
   return knex(config)
 }
 
-function umzugKnex(connection) {
+function umzugKnex (connection) {
   return new Umzug({
     storage: resolve(__dirname, 'storage'),
-    storageOptions: { connection },
+    storageOptions: {connection},
     migrations: {
       params: [connection, Promise],
       path: cli.flags.migrations,
       pattern: /^\d+[\w-_]+\.js$/,
-      wrap: fn => (knex, Promise) => knex.transaction(tx => Promise.resolve(fn(tx, Promise)))
+      wrap: fn => (knex, Promise) =>
+        knex.transaction(tx => Promise.resolve(fn(tx, Promise)))
     }
   })
 }
 
-function help() {
+function help () {
   console.log(cli.help)
   process.exit(1)
 }
 
-function umzugOptions() {
+function umzugOptions () {
   if (isNil(cli.flags.to) && !isNil(cli.input[1])) {
     cli.flags.to = cli.input[1]
   }
@@ -161,10 +173,10 @@ function umzugOptions() {
     cli.flags.from = 0
   }
 
-  return omitBy({ to: cli.flags.to, from: cli.flags.from }, isNil)
+  return omitBy({to: cli.flags.to, from: cli.flags.from}, isNil)
 }
 
-async function main() {
+async function main () {
   if (cli.input.length < 1 && !cli.flags.list) {
     help()
   }
@@ -201,7 +213,7 @@ async function main() {
   }
 }
 
-function createApi(stdout, umzug) {
+function createApi (stdout, umzug) {
   const debug = createDebug(stdout)
 
   umzug
@@ -227,10 +239,10 @@ function createApi(stdout, umzug) {
         }
 
         const maxBatch = maxBy(migrations, 'batch').batch
-        const lastBatch = filter(migrations, { batch: maxBatch })
+        const lastBatch = filter(migrations, {batch: maxBatch})
         const firstFromBatch = minBy(lastBatch, 'migration_time')
 
-        return updown(stdout, umzug, 'down')({ to: firstFromBatch.name })
+        return updown(stdout, umzug, 'down')({to: firstFromBatch.name})
       })
     },
     redo: async () => {
@@ -245,14 +257,14 @@ function createApi(stdout, umzug) {
   return api
 }
 
-function updown(stdout, umzug, type) {
+function updown (stdout, umzug, type) {
   return opts => {
     return umzug[type](opts)
   }
 }
 
-function createDebug(stdout) {
-  return function debug(type) {
+function createDebug (stdout) {
+  return function debug (type) {
     return function (message) {
       if (type === 'migrate') {
         stdout.write(`↑ ${message}...\n`)
@@ -265,13 +277,16 @@ function createDebug(stdout) {
   }
 }
 
-main().then(() => {
-  process.exit(0)
-}, err => {
-  if (cli.flags.verbose) {
-    console.error(err.stack)
-  } else {
-    console.error(err.message)
+main().then(
+  () => {
+    process.exit(0)
+  },
+  err => {
+    if (cli.flags.verbose) {
+      console.error(err.stack)
+    } else {
+      console.error(err.message)
+    }
+    process.exit(1)
   }
-  process.exit(1)
-})
+)
