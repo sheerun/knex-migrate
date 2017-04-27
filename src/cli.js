@@ -64,10 +64,8 @@ function normalizeFlags(flags) {
 
   flags.cwd = flags.cwd || process.cwd()
   flags.knexfile = flags.knexfile || 'knexfile.js'
-  flags.migrations = flags.migrations || 'migrations'
 
   flags.knexfile = resolve(flags.cwd, flags.knexfile)
-  flags.migrations = resolve(flags.cwd, flags.migrations)
 
   flags.env = flags.env || process.env.KNEX_ENV || process.env.NODE_ENV || 'development'
 }
@@ -97,12 +95,6 @@ function knexInit(flags) {
     throw err
   }
 
-  if (!existsSync(flags.migrations)) {
-    console.error(`No migrations directory at '${flags.migrations}'`)
-    console.error('Please create your first migration with \'knex migrate:make <name>\'')
-    process.exit(1)
-  }
-
   if (config[flags.env] && config[flags.env]) {
     config = config[flags.env]
   }
@@ -110,6 +102,15 @@ function knexInit(flags) {
   if (typeof config !== 'object') {
     console.log(`Malformed knexfile.js:`)
     console.log(JSON.stringify(config, null, 2))
+    process.exit(1)
+  }
+
+  flags.migrations = flags.migrations || (config.migrations && config.migrations.directory) || 'migrations'
+  flags.migrations = resolve(flags.cwd, flags.migrations)
+
+  if (!existsSync(flags.migrations)) {
+    console.error(`No migrations directory at '${flags.migrations}'`)
+    console.error('Please create your first migration with \'knex migrate:make <name>\'')
     process.exit(1)
   }
 
