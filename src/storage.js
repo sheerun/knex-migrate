@@ -24,18 +24,20 @@ module.exports = class KnexStorage {
   }
 
   ensureTable () {
-    return this.knex(this.tableName).count('id').catch(err => {
-      if (tableDoesNotExist(err, this.tableName)) {
-        return this.knex.schema.createTable(this.tableName, table => {
-          table.increments()
-          table.string('name')
-          table.integer('batch')
-          table.dateTime('migration_time')
-        })
-      }
+    return this.knex(this.tableName)
+      .count('id')
+      .catch(err => {
+        if (tableDoesNotExist(err, this.tableName)) {
+          return this.knex.schema.createTable(this.tableName, table => {
+            table.increments()
+            table.string('name')
+            table.integer('batch')
+            table.dateTime('migration_time')
+          })
+        }
 
-      throw err
-    })
+        throw err
+      })
   }
 
   async logMigration (migrationName) {
@@ -53,15 +55,21 @@ module.exports = class KnexStorage {
   }
 
   unlogMigration (migrationName) {
-    return this.knex(this.tableName).where('name', migrationName).del()
+    return this.knex(this.tableName)
+      .where('name', migrationName)
+      .del()
   }
 
   migrations () {
-    return this.knex(this.tableName).select().orderBy('id', 'asc')
+    return this.knex(this.tableName)
+      .select()
+      .orderBy('id', 'asc')
   }
 
   executed () {
-    return this.knex(this.tableName).orderBy('id', 'asc').pluck('name')
+    return this.knex(this.tableName)
+      .orderBy('id', 'asc')
+      .pluck('name')
   }
 
   getCurrentBatch () {
