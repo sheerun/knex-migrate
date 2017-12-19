@@ -152,16 +152,12 @@ function help () {
   process.exit(1)
 }
 
-function umzugOptions () {
+async function umzugOptions (command, umzug) {
   if (isNil(cli.flags.to) && !isNil(cli.input[1])) {
     cli.flags.to = cli.input[1]
   }
 
-  if (isNil(cli.flags.to) && isNil(cli.flags.from)) {
-    if (isNil(cli.flags.only)) {
-      return {}
-    }
-
+  if (isNil(cli.flags.to) && isNil(cli.flags.from) && !isNil(cli.flags.only)) {
     return cli.flags.only
   }
 
@@ -173,7 +169,47 @@ function umzugOptions () {
     cli.flags.from = 0
   }
 
-  return omitBy({to: cli.flags.to, from: cli.flags.from}, isNil)
+  const opts = omitBy({to: cli.flags.to, from: cli.flags.from}, isNil)
+
+  if (!isNil(cli.flags.step)) {
+    await applyStepOption(command, umzug, opts, cli.flags.step);
+  }
+
+  return opts
+}
+
+async function applyStepOption (command, umzug, opts, steps) {
+  // Default to 1 step if no number is provided
+  if (steps === '') {
+    steps = 1
+  }
+
+  // Use the list of pending or executed migrations to determine what would happen without --step
+  let migrations = command === 'up'
+    ? await umzug.pending()
+    : await umzug.executed().then(m => m.reverse())
+
+  // Remove migrations prior to the one used in --from
+  // If it isn't in the list, the --from option has no effect
+  if (opts.from) {
+    const limit = migrations.find(m => m.file.startsWith(opts.to))
+    migrations = migrations.slice(Math.min(0, migrations.indexOf(limit)))
+  }
+
+  // Remove migrations after the one used in --to
+  // If it isn't in the list, we remove everything, causing a 'migration not pending' notice to show
+  if (opts.to) {
+    const limit = migrations.find(m => m.file.startsWith(opts.to))
+    migrations = migrations.slice(0, migrations.indexOf(limit) + 1);
+  }
+
+  // Limit to the number of migrations available
+  steps = Math.min(migrations.length, steps)
+
+  // Override the --to option to limit the number of steps taken
+  if (steps > 0) {
+    opts.to = migrations[steps - 1].file
+  }
 }
 
 async function main () {
@@ -188,6 +224,7 @@ async function main () {
   const api = createApi(process.stdout, umzug)
 
   const command = cli.input[0]
+  let opts;
 
   switch (command) {
     case 'list':
@@ -197,10 +234,12 @@ async function main () {
       await api.pending()
       break
     case 'down':
-      await api.down(umzugOptions())
+      opts = await umzugOptions(command, umzug)
+      await api.down(opts)
       break
     case 'up':
-      await api.up(umzugOptions())
+      opts = await umzugOptions(command, umzug)
+      await api.up(opts)
       break
     case 'rollback':
       await api.rollback()
