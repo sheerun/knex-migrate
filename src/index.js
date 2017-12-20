@@ -79,7 +79,15 @@ function knexInit (flags) {
 
   if (flags.verbose) {
     const environment = Object.assign({}, flags, {config})
+    let oldConnection = null;
+    if (environment.config && environment.config.connection) {
+      oldConnection = environment.config.connection
+      environment.config.connection = '<REDACTED>'
+    }
     console.error(prettyjson.render(environment, {noColor: true}))
+    if (oldConnection) {
+      environment.config.connection = oldConnection
+    }
   }
 
   if (config.client === 'sqlite3') {
