@@ -51,6 +51,7 @@ Global options:
   --knexfile    Specify the knexfile path ($cwd/knexfile.js)
   --migrations  Specify migrations path ($cwd/migrations)
   --env         Specify environment ($KNEX_ENV || $NODE_ENV || 'development')
+  --raw         Disable transactions
   --verbose     Be more verbose
 
 As a convenience, you can skip --to flag, and just provide migration name.

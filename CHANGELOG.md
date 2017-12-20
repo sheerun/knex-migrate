@@ -5,6 +5,10 @@
 ### Changed
 
 - Add programmatic API
+- Ability to disable transactions with --raw flag
+
+### Fixed
+
 - Gracefully destroy connection pool
 - Limit connection pool to one connection
 
