@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "migrate": "babel-node ../src/cli.js"
+    "migrate": "babel-node ../src/cli.js",
+    "programmatic": "babel-node ./migrate.js"
   },
   "author": "",
   "license": "ISC",

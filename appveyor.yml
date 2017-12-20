@@ -10,9 +10,7 @@ init:
 # Test against these versions of Node.js.
 environment:
   matrix:
-    - nodejs_version: "4"
-    - nodejs_version: "5"
-    - nodejs_version: "6"
+    - nodejs_version: "8"
 
 # Finish on first failed build
 matrix:
@@ -23,6 +21,7 @@ install:
   - ps: Install-Product node $env:nodejs_version
   - node --version && npm --version
   - npm install
+  - cd example && npm install && npm run programmatic
 
 # Post-install test scripts.
 test_script:

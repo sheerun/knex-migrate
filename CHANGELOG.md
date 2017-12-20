@@ -1,5 +1,12 @@
 # Change Log
 
+# 1.5.0
+
+### Changed
+
+- Add programmatic API
+- Gracefully destroy connection pool
+
 # 1.4.0
 
 ### Changed

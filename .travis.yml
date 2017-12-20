@@ -1,9 +1,7 @@
 language: node_js
 
 node_js:
-  - '4'
-  - '5'
-  - '6'
+  - '8'
 
 install:
   - node --version
@@ -20,7 +18,7 @@ matrix:
     - os: osx
 
 script:
-  - npm test
+  - cd example && npm install && npm run programmatic
 
 cache:
   directories:
