@@ -6,6 +6,7 @@
 
 - Add programmatic API
 - Gracefully destroy connection pool
+- Limit connection pool to one connection
 
 # 1.4.0
 

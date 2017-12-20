@@ -99,8 +99,13 @@ function umzugKnex (flags, connection) {
       params: [connection, Promise],
       path: flags.migrations,
       pattern: /^\d+[\w-_]+\.js$/,
-      wrap: fn => (knex, Promise) =>
-        knex.transaction(tx => Promise.resolve(fn(tx, Promise)))
+      wrap: fn => (knex, Promise) => {
+        if (flags.raw) {
+          return Promise.resolve(fn(knex, Promise))
+        } else {
+          return knex.transaction(tx => Promise.resolve(fn(tx, Promise)))
+        }
+      }
     }
   })
 }
