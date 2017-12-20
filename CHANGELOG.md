@@ -1,5 +1,11 @@
 # Change Log
 
+# 1.4.0
+
+### Changed
+
+- Add ability to migrate in steps (--step flag)
+
 ## 1.3.1
 
 ### Fixed
