@@ -6,6 +6,8 @@
 
 - Add programmatic API
 - Ability to disable transactions with --raw flag
+- Redact connection string in verbose mode (to not leak password)
+- Support for generating migrations
 
 ### Fixed
 

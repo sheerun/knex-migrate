@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-import {resolve, dirname, isAbsolute} from 'path'
+import {resolve, dirname, isAbsolute, relative} from 'path'
 import {existsSync} from 'fs'
 import reqFrom from 'req-from'
 import Umzug from 'umzug'
-import {maxBy, minBy, filter, omitBy, isNil} from 'lodash'
+import fs from 'fs'
+import {maxBy, minBy, filter, omitBy, isNil, template} from 'lodash'
 import * as prettyjson from 'prettyjson'
 import Promise from 'bluebird'
 
@@ -79,7 +80,7 @@ function knexInit (flags) {
 
   if (flags.verbose) {
     const environment = Object.assign({}, flags, {config})
-    let oldConnection = null;
+    let oldConnection = null
     if (environment.config && environment.config.connection) {
       oldConnection = environment.config.connection
       environment.config.connection = '<REDACTED>'
@@ -175,6 +176,50 @@ async function applyStepOption (command, umzug, opts, steps) {
   }
 }
 
+function _ensureFolder (dir) {
+  return Promise.promisify(fs.stat, {context: fs})(dir).catch(() =>
+    Promise.promisify(mkdirp)(dir)
+  )
+}
+
+function _generateStubTemplate (flags) {
+  const stubPath = flags.stub || resolve(__dirname, '..', 'stub', 'js.stub')
+  return Promise.promisify(fs.readFile, {context: fs})(stubPath).then(stub =>
+    template(stub.toString(), {variable: 'd'})
+  )
+}
+
+function _writeNewMigration (dir, name, tmpl) {
+  if (name[0] === '-') name = name.slice(1)
+  const filename = yyyymmddhhmmss() + '_' + name + '.js'
+  const variables = {}
+  if (name.indexOf('create_') === 0) {
+    console.log(name)
+    variables.tableName = name.slice(7)
+  }
+  return Promise.promisify(fs.writeFile, {context: fs})(
+    resolve(dir, filename),
+    tmpl(variables)
+  ).return(resolve(dir, filename))
+}
+
+function padDate (segment) {
+  segment = segment.toString()
+  return segment[1] ? segment : `0${segment}`
+}
+
+function yyyymmddhhmmss () {
+  const d = new Date()
+  return (
+    d.getFullYear().toString() +
+    padDate(d.getMonth() + 1) +
+    padDate(d.getDate()) +
+    padDate(d.getHours()) +
+    padDate(d.getMinutes()) +
+    padDate(d.getSeconds())
+  )
+}
+
 async function knexMigrate (command, flags, progress) {
   flags = flags || {}
   progress = progress || function () {}
@@ -182,7 +227,13 @@ async function knexMigrate (command, flags, progress) {
   const umzug = umzugKnex(flags, knexInit(flags))
 
   const debug = action => migration => {
-    progress({action, migration})
+    progress({
+      action,
+      migration: relative(
+        flags.cwd,
+        resolve(flags.migrations, migration + '.js')
+      )
+    })
   }
 
   umzug
@@ -191,13 +242,34 @@ async function knexMigrate (command, flags, progress) {
     .on('debug', debug('debug'))
 
   const api = {
+    generate: async () => {
+      if (!flags.name) {
+        throw new Error('A name must be specified for the generated migration')
+      }
+
+      const migrationsPath = umzug.options.migrations.path
+
+      const val = await _ensureFolder(migrationsPath)
+      const template = await _generateStubTemplate(flags)
+      const name = await _writeNewMigration(
+        migrationsPath,
+        flags.name,
+        template
+      )
+
+      return relative(flags.cwd, name)
+    },
     list: async () => {
       const migrations = await umzug.executed()
-      return migrations.map(m => m.file.split('.')[0])
+      return migrations.map(m =>
+        relative(flags.cwd, resolve(flags.migrations, m.file))
+      )
     },
     pending: async () => {
       const migrations = await umzug.pending()
-      return migrations.map(m => m.file.split('.')[0])
+      return migrations.map(m =>
+        relative(flags.cwd, resolve(flags.migrations, m.file))
+      )
     },
     rollback: async () => {
       const migrations = await umzug.storage.migrations()

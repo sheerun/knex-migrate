@@ -1,0 +1,10 @@
+exports.up = async function(knex) {
+<% if (d.tableName) { %>  await knex.schema.createTable("<%= d.tableName %>", function(t) {
+    t.increments();
+    t.timestamps();
+  });<% } %>
+};
+
+exports.down = async function(knex) {
+<% if (d.tableName) { %>  await knex.schema.dropTable("<%= d.tableName %>");<% } %>
+};

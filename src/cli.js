@@ -10,6 +10,7 @@ const cli = meow(
     $ knex-migrate <command> [options]
 
   Commands
+    generate  Generate migration
     pending   Lists all pending migrations
     list      Lists all executed migrations
     up        Performs all pending migrations
@@ -34,17 +35,18 @@ const cli = meow(
   As a convenience, you can skip --to flag, and just provide migration name.
 
   Examples
-    $ knex-migrate up                  # migrate to the latest version
-    $ knex-migrate up 20160905         # migrate to a specific version
-    $ knex-migrate up --to 20160905    # the same as above
-    $ knex-migrate up --only 201609085 # apply a single migration, skipping prior migrations
-    $ knex-migrate up --step           # apply only the next migration
-    $ knex-migrate up --step 2         # apply only the next two migrations
-    $ knex-migrate down --to 0         # rollback all migrations
-    $ knex-migrate down                # rollback single migration
-    $ knex-migrate down --step 2       # rollback the previous two migrations
-    $ knex-migrate rollback            # rollback previous "up"
-    $ knex-migrate redo --verbose      # rollback and migrate everything
+    $ knex-migrate up                    # migrate to the latest version
+    $ knex-migrate up 20160905           # migrate to a specific version
+    $ knex-migrate up --to 20160905      # the same as above
+    $ knex-migrate up --only 201609085   # apply a single migration
+    $ knex-migrate up --step             # apply only the next migration
+    $ knex-migrate up --step 2           # apply only the next two migrations
+    $ knex-migrate down --to 0           # rollback all migrations
+    $ knex-migrate down                  # rollback single migration
+    $ knex-migrate down --step 2         # rollback the previous two migrations
+    $ knex-migrate rollback              # rollback previous "up"
+    $ knex-migrate redo --verbose        # rollback and migrate everything
+    $ knex-migrate generate create_users # generate migration creating users table
  `,
   {
     alias: {
@@ -67,19 +69,30 @@ async function main () {
     help()
   }
 
-  if (isNil(cli.flags.to) && !isNil(cli.input[1])) {
-    cli.flags.to = cli.input[1]
+  const command = cli.input[0]
+
+  if (command === 'generate') {
+    if (isNil(cli.flags.name) && !isNil(cli.input[1])) {
+      cli.flags.name = cli.input[1]
+    }
+  } else {
+    if (isNil(cli.flags.to) && !isNil(cli.input[1])) {
+      cli.flags.to = cli.input[1]
+    }
   }
 
   try {
     const result = await knexMigrate(
-      cli.input[0],
+      command,
       cli.flags,
       consoleDebug(process.stdout)
     )
 
     if (Array.isArray(result) && typeof result[0] === 'string') {
       console.log(result.join('\n'))
+    }
+    if (typeof result === 'string') {
+      console.log(result)
     }
   } catch (e) {
     console.error(e.message)
@@ -88,11 +101,11 @@ async function main () {
 }
 
 function consoleDebug (stdout) {
-  return ({type, migration}) => {
-    if (type === 'migrate') {
-      stdout.write(`↑ ${migration}...\n`)
-    } else if (type === 'revert') {
-      stdout.write(`↓ ${migration}...\n`)
+  return ({action, migration}) => {
+    if (action === 'migrate') {
+      stdout.write(`↑ ${migration}\n`)
+    } else if (action === 'revert') {
+      stdout.write(`↓ ${migration}\n`)
     } else {
       stdout.write(`${migration}\n`)
     }

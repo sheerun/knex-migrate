@@ -33,6 +33,7 @@ Usage
   $ knex-migrate <command> [options]
 
 Commands
+  generate  Generate migration
   pending   Lists all pending migrations
   list      Lists all executed migrations
   up        Performs all pending migrations
@@ -57,17 +58,18 @@ Global options:
 As a convenience, you can skip --to flag, and just provide migration name.
 
 Examples
-  $ knex-migrate up                  # migrate to the latest version
-  $ knex-migrate up 20160905         # migrate to a specific version
-  $ knex-migrate up --to 20160905    # the same as above
-  $ knex-migrate up --only 201609085 # apply a single migration, skipping prior migrations
-  $ knex-migrate up --step           # apply only the next migration
-  $ knex-migrate up --step 2         # apply only the next two migrations
-  $ knex-migrate down --to 0         # rollback all migrations
-  $ knex-migrate down                # rollback single migration
-  $ knex-migrate down --step 2       # rollback the previous two migrations
-  $ knex-migrate rollback            # rollback previous "up"
-  $ knex-migrate redo --verbose      # rollback and migrate everything
+  $ knex-migrate up                    # migrate to the latest version
+  $ knex-migrate up 20160905           # migrate to a specific version
+  $ knex-migrate up --to 20160905      # the same as above
+  $ knex-migrate up --only 201609085   # apply a single migration
+  $ knex-migrate up --step             # apply only the next migration
+  $ knex-migrate up --step 2           # apply only the next two migrations
+  $ knex-migrate down --to 0           # rollback all migrations
+  $ knex-migrate down                  # rollback single migration
+  $ knex-migrate down --step 2         # rollback the previous two migrations
+  $ knex-migrate rollback              # rollback previous "up"
+  $ knex-migrate redo --verbose        # rollback and migrate everything
+  $ knex-migrate generate create_users # generate migration creating users table
 ```
 
 ## Programmatic API
