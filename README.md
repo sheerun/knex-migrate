@@ -75,7 +75,7 @@ Examples
 ## Programmatic API
 
 ```es6
-import knexMigrate from '../src'
+import knexMigrate from 'knex-migrate'
 
 // It has following signature:
 // knexMigrate(command: String, flags: Object, progress: Function)
