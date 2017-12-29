@@ -1,6 +1,6 @@
 {
   "name": "knex-migrate",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "license": "MIT",
   "bin": "lib/cli.js",
   "author": "Adam Stankiewicz <sheerun@sher.pl>",

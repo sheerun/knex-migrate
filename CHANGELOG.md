@@ -1,5 +1,11 @@
 # Change Log
 
+# 1.5.1
+
+### Fixed
+
+- Include js.stub file in release
+
 # 1.5.0
 
 ### Changed
