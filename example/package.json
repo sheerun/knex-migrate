@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "migrate": "node ../src/cli.js",
+    "migrate": "node ../package/src/cli.js",
     "programmatic": "node ./migrate.js"
   },
   "author": "",

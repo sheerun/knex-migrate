@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const knexMigrate = require('../src')
+const knexMigrate = require('../package/src')
 
 // It has following signature:
 // knexMigrate(command: String, flags: Object, progress: Function)
