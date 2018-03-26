@@ -5,7 +5,7 @@ import knexMigrate from '../src'
 // It has following signature:
 // knexMigrate(command: String, flags: Object, progress: Function)
 
-async function run() {
+async function run () {
   const log = ({ action, migration }) =>
     console.log('Doing ' + action + ' on ' + migration)
 
@@ -19,4 +19,10 @@ async function run() {
   await knexMigrate('down', { to: 0 }, log)
 }
 
-run().then(() => {}, (err) => { console.error(err.message); process.exit(1) })
+run().then(
+  () => {},
+  err => {
+    console.error(err.message)
+    process.exit(1)
+  }
+)

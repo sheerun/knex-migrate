@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import meow from 'meow'
-import {isNil} from 'lodash'
+import { isNil } from 'lodash'
 import knexMigrate from './'
 
 const cli = meow(
@@ -101,7 +101,7 @@ async function main () {
 }
 
 function consoleDebug (stdout) {
-  return ({action, migration}) => {
+  return ({ action, migration }) => {
     if (action === 'migrate') {
       stdout.write(`↑ ${migration}\n`)
     } else if (action === 'revert') {

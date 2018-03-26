@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import {resolve, dirname, isAbsolute, relative} from 'path'
-import {existsSync} from 'fs'
+import { resolve, dirname, isAbsolute, relative } from 'path'
+import { existsSync } from 'fs'
 import reqFrom from 'req-from'
 import Umzug from 'umzug'
 import fs from 'fs'
-import {maxBy, minBy, filter, omitBy, isNil, template} from 'lodash'
+import { maxBy, minBy, filter, omitBy, isNil, template } from 'lodash'
 import * as prettyjson from 'prettyjson'
 import Promise from 'bluebird'
 
@@ -79,13 +79,13 @@ function knexInit (flags) {
   }
 
   if (flags.verbose) {
-    const environment = Object.assign({}, flags, {config})
+    const environment = Object.assign({}, flags, { config })
     let oldConnection = null
     if (environment.config && environment.config.connection) {
       oldConnection = environment.config.connection
       environment.config.connection = '<REDACTED>'
     }
-    console.error(prettyjson.render(environment, {noColor: true}))
+    console.error(prettyjson.render(environment, { noColor: true }))
     if (oldConnection) {
       environment.config.connection = oldConnection
     }
@@ -95,7 +95,7 @@ function knexInit (flags) {
     config.useNullAsDefault = true
   }
 
-  config.pool = {max: 1, min: 0, idleTimeoutMillis: 1000}
+  config.pool = { max: 1, min: 0, idleTimeoutMillis: 1000 }
 
   return knex(config)
 }
@@ -103,7 +103,7 @@ function knexInit (flags) {
 function umzugKnex (flags, connection) {
   return new Umzug({
     storage: resolve(__dirname, 'storage'),
-    storageOptions: {connection},
+    storageOptions: { connection },
     migrations: {
       params: [connection, Promise],
       path: flags.migrations,
@@ -132,7 +132,7 @@ async function umzugOptions (command, flags, umzug) {
     flags.from = 0
   }
 
-  const opts = omitBy({to: flags.to, from: flags.from}, isNil)
+  const opts = omitBy({ to: flags.to, from: flags.from }, isNil)
 
   if (!isNil(flags.step)) {
     await applyStepOption(command, umzug, opts, flags.step)
@@ -177,15 +177,15 @@ async function applyStepOption (command, umzug, opts, steps) {
 }
 
 function _ensureFolder (dir) {
-  return Promise.promisify(fs.stat, {context: fs})(dir).catch(() =>
+  return Promise.promisify(fs.stat, { context: fs })(dir).catch(() =>
     Promise.promisify(mkdirp)(dir)
   )
 }
 
 function _generateStubTemplate (flags) {
   const stubPath = flags.stub || resolve(__dirname, '..', 'stub', 'js.stub')
-  return Promise.promisify(fs.readFile, {context: fs})(stubPath).then(stub =>
-    template(stub.toString(), {variable: 'd'})
+  return Promise.promisify(fs.readFile, { context: fs })(stubPath).then(stub =>
+    template(stub.toString(), { variable: 'd' })
   )
 }
 
@@ -197,7 +197,7 @@ function _writeNewMigration (dir, name, tmpl) {
     console.log(name)
     variables.tableName = name.slice(7)
   }
-  return Promise.promisify(fs.writeFile, {context: fs})(
+  return Promise.promisify(fs.writeFile, { context: fs })(
     resolve(dir, filename),
     tmpl(variables)
   ).return(resolve(dir, filename))
@@ -279,10 +279,10 @@ async function knexMigrate (command, flags, progress) {
       }
 
       const maxBatch = maxBy(migrations, 'batch').batch
-      const lastBatch = filter(migrations, {batch: maxBatch})
+      const lastBatch = filter(migrations, { batch: maxBatch })
       const firstFromBatch = minBy(lastBatch, 'migration_time')
 
-      return umzug.down({to: firstFromBatch.name})
+      return umzug.down({ to: firstFromBatch.name })
     },
     redo: async () => {
       const history = await umzug.executed()

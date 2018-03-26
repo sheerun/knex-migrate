@@ -1,5 +1,5 @@
 import invariant from 'invariant'
-import {get} from 'lodash'
+import { get } from 'lodash'
 
 function tableDoesNotExist (err, table) {
   return (

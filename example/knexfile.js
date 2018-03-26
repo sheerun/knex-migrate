@@ -1,5 +1,4 @@
 module.exports = {
-
   development: {
     client: 'sqlite3',
     connection: {
@@ -10,4 +9,4 @@ module.exports = {
       directory: './db/migrations'
     }
   }
-};
+}
