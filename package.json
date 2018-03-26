@@ -29,9 +29,9 @@
     "np": "^2.9.0"
   },
   "scripts": {
-    "test": "ava",
-    "format": "prettier-standard src/*.js",
-    "build": "run ./scripts/build",
+    "test": "modern test",
+    "format": "modern format",
+    "build": "modern build",
     "cli": "run ./scripts/cli"
   },
   "files": [
