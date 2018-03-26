@@ -21,6 +21,7 @@ install:
   - ps: Install-Product node $env:nodejs_version
   - node --version && npm --version
   - npm install
+  - npm run build
   - cd example && npm install && npm run programmatic
 
 # Post-install test scripts.
