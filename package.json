@@ -2,12 +2,11 @@
   "name": "knex-migrate",
   "version": "1.5.1",
   "license": "MIT",
-  "bin": "lib/cli.js",
+  "bin": "src/cli.js",
   "author": "Adam Stankiewicz <sheerun@sher.pl>",
   "repository": "sheerun/knex-migrate",
   "description": "Modern migration toolkit for knex.js",
-  "main": "lib/index.js",
-  "main:next": "src/index.js",
+  "main": "src/index.js",
   "dependencies": {
     "bluebird": "^3.4.6",
     "invariant": "^2.2.1",
@@ -21,11 +20,8 @@
     "knex": "*"
   },
   "devDependencies": {
-    "babel-watch": "^2.0.3",
-    "cross-run": "^1.0.1",
-    "knex": "^0.14.2",
-    "modern-node": "^1.0.0-alpha.0",
-    "np": "^2.9.0"
+    "knex": "^0.14.4",
+    "modern-node": "^1.0.0-alpha.1"
   },
   "scripts": {
     "test": "modern test",
@@ -34,7 +30,6 @@
     "cli": "run ./scripts/cli"
   },
   "files": [
-    "lib",
     "src",
     "stub"
   ]
