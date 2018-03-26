@@ -27,7 +27,8 @@
     "test": "modern test",
     "format": "modern format",
     "build": "modern build",
-    "cli": "run ./scripts/cli"
+    "cli": "run ./scripts/cli",
+    "precommit": "modern precommit"
   },
   "files": [
     "src",
