@@ -4,17 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "migrate": "babel-node ../src/cli.js",
-    "programmatic": "babel-node ./migrate.js"
+    "migrate": "node ../src/cli.js",
+    "programmatic": "node ./migrate.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "knex": "^0.12.9",
-    "knex-migrate": "^1.2.0",
     "sqlite3": "^3.1.13"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.24.1"
   }
 }

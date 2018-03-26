@@ -1,6 +1,6 @@
-#!/usr/bin/env babel-node
+#!/usr/bin/env node
 
-import knexMigrate from '../src'
+const knexMigrate = require('../src')
 
 // It has following signature:
 // knexMigrate(command: String, flags: Object, progress: Function)

@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import { resolve, dirname, isAbsolute, relative } from 'path'
-import { existsSync } from 'fs'
-import reqFrom from 'req-from'
-import Umzug from 'umzug'
-import fs from 'fs'
-import { maxBy, minBy, filter, omitBy, isNil, template } from 'lodash'
-import * as prettyjson from 'prettyjson'
-import Promise from 'bluebird'
+const { resolve, dirname, isAbsolute, relative } = require('path')
+const { existsSync } = require('fs')
+const reqFrom = require('req-from')
+const Umzug = require('umzug')
+const fs = require('fs')
+const { maxBy, minBy, filter, omitBy, isNil, template } = require('lodash')
+const prettyjson = require('prettyjson')
+const Promise = require('bluebird')
 
 function normalizeFlags (flags) {
   if (isAbsolute(flags.knexfile || '') && !flags.cwd) {
@@ -183,7 +183,7 @@ function _ensureFolder (dir) {
 }
 
 function _generateStubTemplate (flags) {
-  const stubPath = flags.stub || resolve(__dirname, '..', 'stub', 'js.stub')
+  const stubPath = flags.stub || resolve(__dirname, 'stub', 'js.stub')
   return Promise.promisify(fs.readFile, { context: fs })(stubPath).then(stub =>
     template(stub.toString(), { variable: 'd' })
   )
@@ -316,4 +316,5 @@ async function knexMigrate (command, flags, progress) {
   }
 }
 
-export default knexMigrate
+module.exports = knexMigrate
+module.exports.default = knexMigrate

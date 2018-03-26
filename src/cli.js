@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import meow from 'meow'
-import { isNil } from 'lodash'
-import knexMigrate from './'
+const meow = require('meow')
+const { isNil } = require('lodash')
+const knexMigrate = require('./')
 
 const cli = meow(
   `

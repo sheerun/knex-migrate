@@ -1,1 +1,0 @@
-babel-node src/cli.js "$@"

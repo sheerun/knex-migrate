@@ -1,5 +1,5 @@
-import invariant from 'invariant'
-import { get } from 'lodash'
+const invariant = require('invariant')
+const { get } = require('lodash')
 
 function tableDoesNotExist (err, table) {
   return (
@@ -11,7 +11,7 @@ function tableDoesNotExist (err, table) {
 
 module.exports = class KnexStorage {
   constructor (options) {
-    this.knex = options.storageOptions.connection
+    this.knex = options.connection
     this.tableName = get(
       this.knex,
       'client.config.migrations.tableName',
