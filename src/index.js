@@ -260,18 +260,21 @@ async function knexMigrate (command, flags, progress) {
       return relative(flags.cwd, name)
     },
     list: async () => {
+      await umzug.storage.ensureTable()
       const migrations = await umzug.executed()
       return migrations.map(m =>
         relative(flags.cwd, resolve(flags.migrations, m.file))
       )
     },
     pending: async () => {
+      await umzug.storage.ensureTable()
       const migrations = await umzug.pending()
       return migrations.map(m =>
         relative(flags.cwd, resolve(flags.migrations, m.file))
       )
     },
     rollback: async () => {
+      await umzug.storage.ensureTable()
       const migrations = await umzug.storage.migrations()
 
       if (migrations.length === 0) {
@@ -285,6 +288,7 @@ async function knexMigrate (command, flags, progress) {
       return umzug.down({ to: firstFromBatch.name })
     },
     redo: async () => {
+      await umzug.storage.ensureTable()
       const history = await umzug.executed()
       const args = {}
       if (history.length > 0) {
