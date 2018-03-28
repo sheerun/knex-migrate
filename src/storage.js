@@ -70,6 +70,13 @@ module.exports = class KnexStorage {
     return this.knex(this.tableName)
       .orderBy('id', 'asc')
       .pluck('name')
+      .catch(err => {
+        if (tableDoesNotExist(err, this.tableName)) {
+          return []
+        }
+
+        throw err
+      })
   }
 
   getCurrentBatch () {
