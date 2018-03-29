@@ -104,6 +104,7 @@ run()
 
 - [@marcbachmann](https://github.com/marcbachmann) for inspiration and starting point ([knex-umzug](https://github.com/marcbachmann/knex-umzug) and [umzug-cli](https://github.com/marcbachmann/umzug-cli))
 - [@carlbennettnz](https://github.com/carlbennettnz) for suggesting and implementing `--step` option
+- [@chadxz](https://github.com/chadxz) for suggesting and implementing various improvements
 
 ## License
 
