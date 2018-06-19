@@ -42,16 +42,21 @@ function knexInit (flags) {
 
   let config
 
-  try {
-    config = require(flags.knexfile)
-  } catch (err) {
-    if (/Cannot find module/.test(err.message)) {
-      console.error(`No knexfile at '${flags.knexfile}'`)
-      console.error("Please create one or bootstrap using 'knex init'")
-      process.exit(1)
-    }
+  if(flags.knexConfig) {
 
-    throw err
+    config = flags.knexConfig
+  } else {
+      try {
+        config = require(flags.knexfile)
+      } catch (err) {
+        if (/Cannot find module/.test(err.message)) {
+          console.error(`No knexfile at '${flags.knexfile}'`)
+          console.error("Please create one or bootstrap using 'knex init'")
+          process.exit(1)
+        }
+
+        throw err
+      }
   }
 
   if (config[flags.env] && config[flags.env]) {
@@ -59,7 +64,7 @@ function knexInit (flags) {
   }
 
   if (typeof config !== 'object') {
-    console.error(`Malformed knexfile.js:`)
+    console.error(`Malformed knex config:`)
     console.error(JSON.stringify(config, null, 2))
     process.exit(1)
   }
