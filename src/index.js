@@ -42,9 +42,9 @@ function knexInit (flags) {
 
   let config
 
-  if(flags.knexConfig) {
+  if(flags.config) {
 
-    config = flags.knexConfig
+    config = flags.config
   } else {
       try {
         config = require(flags.knexfile)
