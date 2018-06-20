@@ -1,6 +1,6 @@
 # Change Log
 
-# 1.5.1
+# 1.6.0
 
 ### Added
 
