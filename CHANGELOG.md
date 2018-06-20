@@ -2,6 +2,14 @@
 
 # 1.5.1
 
+### Added
+
+- Allow for specify config programatically with `config` argument
+
+# Change Log
+
+# 1.5.1
+
 ### Fixed
 
 - Include js.stub file in release
