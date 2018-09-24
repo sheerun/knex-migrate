@@ -29,6 +29,9 @@
     "build": "modern build",
     "precommit": "modern precommit"
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "files": [
     "src"
   ]

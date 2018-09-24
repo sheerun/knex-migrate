@@ -112,7 +112,7 @@ function umzugKnex (flags, connection) {
     migrations: {
       params: [connection, Promise],
       path: flags.migrations,
-      pattern: /^\d+[\w-_]+\.[j|t]s$/,
+      pattern: /^\d+_.+\.[j|t]s$/,
       wrap: fn => (knex, Promise) => {
         if (flags.raw) {
           return Promise.resolve(fn(knex, Promise))
