@@ -78,7 +78,7 @@ Examples
 import knexMigrate from 'knex-migrate'
 
 // It has following signature:
-// knexMigrate(command: String, flags: Object, progress: Function)
+// knexMigrate(command: String, flags: Object, progress: Function [, beforeRun: Function])
 
 async function run() {
   // Action can be: migrate, revert. Migration is migration name. For example:
@@ -95,6 +95,13 @@ async function run() {
   await knexMigrate('rollback', {}, log)
   await knexMigrate('redo', {}, log)
   await knexMigrate('down', { to: 0 }, log)
+
+  // You can add a final argument to access umzug before migration execution:
+  await knexMigrate('up', {}, log, function beforeRun(umzug) {
+    umzug.on('migrated', (name, migration) => {
+      // you could seed some data on a given migration, etc...
+    })
+  })
 }
 
 run()

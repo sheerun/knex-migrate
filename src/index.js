@@ -42,21 +42,20 @@ function knexInit (flags) {
 
   let config
 
-  if(flags.config) {
-
+  if (flags.config) {
     config = flags.config
   } else {
-      try {
-        config = require(flags.knexfile)
-      } catch (err) {
-        if (/Cannot find module/.test(err.message)) {
-          console.error(`No knexfile at '${flags.knexfile}'`)
-          console.error("Please create one or bootstrap using 'knex init'")
-          process.exit(1)
-        }
-
-        throw err
+    try {
+      config = require(flags.knexfile)
+    } catch (err) {
+      if (/Cannot find module/.test(err.message)) {
+        console.error(`No knexfile at '${flags.knexfile}'`)
+        console.error("Please create one or bootstrap using 'knex init'")
+        process.exit(1)
       }
+
+      throw err
+    }
   }
 
   if (config[flags.env] && config[flags.env]) {
@@ -105,8 +104,8 @@ function knexInit (flags) {
   return knex(config)
 }
 
-function umzugKnex (flags, connection) {
-  return new Umzug({
+function umzugKnex (flags, connection, prepareUmzug) {
+  const inst = new Umzug({
     storage: resolve(__dirname, 'storage'),
     storageOptions: { connection },
     migrations: {
@@ -122,6 +121,10 @@ function umzugKnex (flags, connection) {
       }
     }
   })
+  if (typeof prepareUmzug === 'function') {
+    prepareUmzug(inst)
+  }
+  return inst
 }
 
 async function umzugOptions (command, flags, umzug) {
@@ -225,19 +228,16 @@ function yyyymmddhhmmss () {
   )
 }
 
-async function knexMigrate (command, flags, progress) {
+async function knexMigrate (command, flags, progress, beforeRun) {
   flags = flags || {}
   progress = progress || function () {}
 
-  const umzug = umzugKnex(flags, knexInit(flags))
+  const umzug = umzugKnex(flags, knexInit(flags), beforeRun)
 
   const debug = action => migration => {
     progress({
       action,
-      migration: relative(
-        flags.cwd,
-        resolve(flags.migrations, migration)
-      )
+      migration: relative(flags.cwd, resolve(flags.migrations, migration))
     })
   }
 
