@@ -2,7 +2,7 @@
   "name": "example",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "migrate.js",
   "scripts": {
     "migrate": "node ../package/src/cli.js",
     "programmatic": "node ./migrate.js"
@@ -12,6 +12,6 @@
   "dependencies": {
     "knex": "^0.14.4",
     "knex-migrate": "^1.5.3",
-    "sqlite3": "^3.1.13"
+    "sqlite3": "^4.0.2"
   }
 }
