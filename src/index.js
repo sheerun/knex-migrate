@@ -5,7 +5,15 @@ const { existsSync } = require('fs')
 const reqFrom = require('req-from')
 const Umzug = require('umzug')
 const fs = require('fs')
-const { maxBy, minBy, filter, omitBy, isNil, template } = require('lodash')
+const {
+  maxBy,
+  minBy,
+  filter,
+  omitBy,
+  pick,
+  isNil,
+  template
+} = require('lodash')
 const prettyjson = require('prettyjson')
 const Promise = require('bluebird')
 
@@ -42,21 +50,20 @@ function knexInit (flags) {
 
   let config
 
-  if(flags.config) {
-
+  if (flags.config) {
     config = flags.config
   } else {
-      try {
-        config = require(flags.knexfile)
-      } catch (err) {
-        if (/Cannot find module/.test(err.message)) {
-          console.error(`No knexfile at '${flags.knexfile}'`)
-          console.error("Please create one or bootstrap using 'knex init'")
-          process.exit(1)
-        }
-
-        throw err
+    try {
+      config = require(flags.knexfile)
+    } catch (err) {
+      if (/Cannot find module/.test(err.message)) {
+        console.error(`No knexfile at '${flags.knexfile}'`)
+        console.error("Please create one or bootstrap using 'knex init'")
+        process.exit(1)
       }
+
+      throw err
+    }
   }
 
   if (config[flags.env] && config[flags.env]) {
@@ -234,10 +241,7 @@ async function knexMigrate (command, flags, progress) {
   const debug = action => migration => {
     progress({
       action,
-      migration: relative(
-        flags.cwd,
-        resolve(flags.migrations, migration)
-      )
+      migration: relative(flags.cwd, resolve(flags.migrations, migration))
     })
   }
 
@@ -291,11 +295,14 @@ async function knexMigrate (command, flags, progress) {
     },
     redo: async () => {
       const history = await umzug.executed()
-      const args = {}
+      const args = {
+        ...pick(flags, ['knexfile', 'env'])
+      }
+      const rbArgs = args
       if (history.length > 0) {
         args.to = history[history.length - 1].file
       }
-      await knexMigrate('rollback', {}, progress)
+      await knexMigrate('rollback', rbArgs, progress)
       await knexMigrate('up', args, progress)
     },
     up: async () => {
