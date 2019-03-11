@@ -26,13 +26,17 @@
   "scripts": {
     "test": "modern test",
     "format": "modern format",
-    "build": "modern build",
-    "precommit": "modern precommit"
+    "build": "modern build"
   },
   "jest": {
     "testEnvironment": "node"
   },
   "files": [
     "src"
-  ]
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "modern precommit"
+    }
+  }
 }
