@@ -42,21 +42,20 @@ function knexInit (flags) {
 
   let config
 
-  if(flags.config) {
-
+  if (flags.config) {
     config = flags.config
   } else {
-      try {
-        config = require(flags.knexfile)
-      } catch (err) {
-        if (/Cannot find module/.test(err.message)) {
-          console.error(`No knexfile at '${flags.knexfile}'`)
-          console.error("Please create one or bootstrap using 'knex init'")
-          process.exit(1)
-        }
-
-        throw err
+    try {
+      config = require(flags.knexfile)
+    } catch (err) {
+      if (/Cannot find module/.test(err.message)) {
+        console.error(`No knexfile at '${flags.knexfile}'`)
+        console.error("Please create one or bootstrap using 'knex init'")
+        process.exit(1)
       }
+
+      throw err
+    }
   }
 
   if (config[flags.env] && config[flags.env]) {
@@ -234,10 +233,7 @@ async function knexMigrate (command, flags, progress) {
   const debug = action => migration => {
     progress({
       action,
-      migration: relative(
-        flags.cwd,
-        resolve(flags.migrations, migration)
-      )
+      migration: relative(flags.cwd, resolve(flags.migrations, migration))
     })
   }
 
