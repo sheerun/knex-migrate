@@ -5,7 +5,15 @@ const { existsSync } = require('fs')
 const reqFrom = require('req-from')
 const Umzug = require('umzug')
 const fs = require('fs')
-const { maxBy, minBy, filter, omitBy, isNil, template } = require('lodash')
+const {
+  maxBy,
+  minBy,
+  filter,
+  omitBy,
+  pick,
+  isNil,
+  template
+} = require('lodash')
 const prettyjson = require('prettyjson')
 const Promise = require('bluebird')
 
@@ -48,6 +56,7 @@ function knexInit (flags) {
     try {
       config = require(flags.knexfile)
     } catch (err) {
+      console.error('asdfa')
       if (/Cannot find module/.test(err.message)) {
         console.error(`No knexfile at '${flags.knexfile}'`)
         console.error("Please create one or bootstrap using 'knex init'")
@@ -287,12 +296,12 @@ async function knexMigrate (command, flags, progress) {
     },
     redo: async () => {
       const history = await umzug.executed()
-      const args = {}
+      const args = Object.assign({}, flags)
       if (history.length > 0) {
         args.to = history[history.length - 1].file
       }
-      await knexMigrate('rollback', {}, progress)
-      await knexMigrate('up', args, progress)
+      await knexMigrate('rollback', args, progress)
+      await knexMigrate('up', flags, progress)
     },
     up: async () => {
       const opts = await umzugOptions('up', flags, umzug)
