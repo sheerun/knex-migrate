@@ -25,8 +25,7 @@
   },
   "scripts": {
     "test": "modern test",
-    "format": "modern format",
-    "build": "modern build"
+    "format": "modern format"
   },
   "jest": {
     "testEnvironment": "node"
