@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "knex": "^0.14.4",
-    "knex-migrate": "^1.5.3",
+    "knex-migrate": "^1.7.1",
     "sqlite3": "^4.0.6"
   }
 }
