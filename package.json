@@ -1,6 +1,6 @@
 {
   "name": "knex-migrate",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "license": "MIT",
   "bin": "src/cli.js",
   "author": "Adam Stankiewicz <sheerun@sher.pl>",
@@ -34,6 +34,9 @@
   "files": [
     "src"
   ],
+  "engines" : {
+    "node" : ">=8"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "modern precommit"
