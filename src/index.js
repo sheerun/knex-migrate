@@ -56,7 +56,6 @@ function knexInit (flags) {
     try {
       config = require(flags.knexfile)
     } catch (err) {
-      console.error('asdfa')
       if (/Cannot find module/.test(err.message)) {
         console.error(`No knexfile at '${flags.knexfile}'`)
         console.error("Please create one or bootstrap using 'knex init'")
