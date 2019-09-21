@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "migrate": "node ../src/cli.js --knexfile knexfile-custom.js",
+    "up": "node ../src/cli.js up --knexfile knexfile-custom.js",
+    "down": "node ../src/cli.js down --knexfile knexfile-custom.js",
     "programmatic": "node ./migrate.js"
   },
   "author": "",

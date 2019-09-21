@@ -9,14 +9,15 @@ async function run () {
   const log = ({ action, migration }) =>
     console.log('Doing ' + action + ' on ' + migration)
 
-  await knexMigrate('up', { to: '20170727093232' }, log)
-  await knexMigrate('down', { step: 2 }, log)
-  await knexMigrate('down', { to: 0 }, log)
-  await knexMigrate('up', {}, log)
-  await knexMigrate('redo', {}, log)
-  await knexMigrate('rollback', {}, log)
-  await knexMigrate('redo', {}, log)
-  await knexMigrate('down', { to: 0 }, log)
+  const knexfile = 'knexfile-custom.js'
+  await knexMigrate('up', { to: '20170727093232', knexfile }, log)
+  await knexMigrate('down', { step: 2, knexfile }, log)
+  await knexMigrate('down', { to: 0, knexfile }, log)
+  await knexMigrate('up', { knexfile }, log)
+  await knexMigrate('redo', { knexfile }, log)
+  await knexMigrate('rollback', { knexfile }, log)
+  await knexMigrate('redo', { knexfile }, log)
+  await knexMigrate('down', { to: 0, knexfile }, log)
 }
 
 run().then(

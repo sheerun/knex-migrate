@@ -5,19 +5,13 @@ const { existsSync } = require('fs')
 const reqFrom = require('req-from')
 const Umzug = require('umzug')
 const fs = require('fs')
-const {
-  maxBy,
-  minBy,
-  filter,
-  omitBy,
-  pick,
-  isNil,
-  template
-} = require('lodash')
+const mkdirp = require('mkdirp')
+const { maxBy, minBy, filter, omitBy, isNil, template } = require('lodash')
 const prettyjson = require('prettyjson')
 const Promise = require('bluebird')
 
 function normalizeFlags (flags) {
+  console.log(flags)
   if (isAbsolute(flags.knexfile || '') && !flags.cwd) {
     flags.cwd = dirname(flags.knexfile)
   }
@@ -30,6 +24,7 @@ function normalizeFlags (flags) {
   flags.knexfile = flags.knexfile || 'knexfile.js'
 
   flags.knexfile = resolve(flags.cwd, flags.knexfile)
+  console.log(flags.knexfile)
 
   flags.env =
     flags.env || process.env.KNEX_ENV || process.env.NODE_ENV || 'development'
@@ -190,7 +185,7 @@ async function applyStepOption (command, umzug, opts, steps) {
 
 function _ensureFolder (dir) {
   return Promise.promisify(fs.stat, { context: fs })(dir).catch(() =>
-    Promise.promisify(mkdirp)(dir)
+    mkdirp.sync(dir)
   )
 }
 
@@ -258,7 +253,7 @@ async function knexMigrate (command, flags, progress) {
 
       const migrationsPath = umzug.options.migrations.path
 
-      const val = await _ensureFolder(migrationsPath)
+      await _ensureFolder(migrationsPath)
       const template = await _generateStubTemplate(flags)
       const name = await _writeNewMigration(
         migrationsPath,

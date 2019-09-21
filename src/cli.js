@@ -64,7 +64,7 @@ function help () {
 }
 
 async function main () {
-  const flags = require('minimist')(process.argv.slice(2), options)
+  const flags = minimist(process.argv.slice(2), options)
   const input = flags._
 
   if (input.length < 1 && !flags.list) {
@@ -117,6 +117,8 @@ function consoleDebug (stdout) {
 main().then(
   () => {},
   err => {
+    const flags = minimist(process.argv.slice(2), options)
+
     if (flags.verbose) {
       console.error(err.stack)
     } else {

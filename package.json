@@ -12,6 +12,7 @@
     "invariant": "^2.2.1",
     "lodash": "^4.16.4",
     "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
     "prettyjson": "^1.1.3",
     "req-from": "^1.0.1",
     "umzug": "^2.1.0"
@@ -21,24 +22,21 @@
   },
   "devDependencies": {
     "knex": "^0.14.4",
-    "modern-node": "1.1.1"
+    "modern-node": "^2.4.0"
   },
   "scripts": {
     "test": "modern test",
-    "format": "modern format"
+    "lint": "modern lint",
+    "format": "modern format",
+    "precommit": "modern precommit"
   },
-  "jest": {
-    "testEnvironment": "node"
+  "lint-staged": {
+    "*.js": "modern lint"
   },
   "files": [
     "src"
   ],
-  "engines" : {
-    "node" : ">=8"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "modern precommit"
-    }
+  "engines": {
+    "node": ">=8"
   }
 }
