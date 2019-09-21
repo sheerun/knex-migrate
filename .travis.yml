@@ -8,11 +8,13 @@ node_js:
 os:
   - osx
   - linux
+  - windows
 
 matrix:
   fast_finish: true
   allow_failures:
     - os: osx
+    - os: windows
 
 script:
   - npm test
