@@ -11,7 +11,6 @@ const prettyjson = require('prettyjson')
 const Promise = require('bluebird')
 
 function normalizeFlags (flags) {
-  console.log(flags)
   if (isAbsolute(flags.knexfile || '') && !flags.cwd) {
     flags.cwd = dirname(flags.knexfile)
   }
@@ -24,7 +23,6 @@ function normalizeFlags (flags) {
   flags.knexfile = flags.knexfile || 'knexfile.js'
 
   flags.knexfile = resolve(flags.cwd, flags.knexfile)
-  console.log(flags.knexfile)
 
   flags.env =
     flags.env || process.env.KNEX_ENV || process.env.NODE_ENV || 'development'
