@@ -22,16 +22,13 @@
   },
   "devDependencies": {
     "knex": "^0.14.4",
-    "modern-node": "^2.4.0"
+    "modern-node": "^2.5.0"
   },
   "scripts": {
     "test": "modern test",
     "lint": "modern lint",
     "format": "modern format",
     "precommit": "modern precommit"
-  },
-  "lint-staged": {
-    "*.js": "modern lint"
   },
   "files": [
     "src"

@@ -1315,10 +1315,10 @@ eslint-visitor-keys@^1.0.0, eslint-visitor-keys@^1.1.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-1.1.0.tgz#e2a82cea84ff246ad6fb57f9bde5b46621459ec2"
   integrity sha512-8y9YjtM1JBJU/A9Kc+SbaOV4y29sSWckBwMHa+FGtVj5gN/sbnKDf6xJUl+8g7FAij9LVaP8C24DUiH/f/2Z9A==
 
-eslint@6.2.2:
-  version "6.2.2"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-6.2.2.tgz#03298280e7750d81fcd31431f3d333e43d93f24f"
-  integrity sha512-mf0elOkxHbdyGX1IJEUsNBzCDdyoUgljF3rRlgfyYh0pwGnreLc0jjD6ZuleOibjmnUWZLY2eXwSooeOgGJ2jw==
+eslint@^6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-6.4.0.tgz#5aa9227c3fbe921982b2eda94ba0d7fae858611a"
+  integrity sha512-WTVEzK3lSFoXUovDHEbkJqCVPEPwbhCq4trDktNI6ygs7aO41d4cDT0JFAT5MivzZeVLWlg7vHL+bgrQv/t3vA==
   dependencies:
     "@babel/code-frame" "^7.0.0"
     ajv "^6.10.0"
@@ -2757,7 +2757,7 @@ jest-worker@^24.6.0, jest-worker@^24.9.0:
     merge-stream "^2.0.0"
     supports-color "^6.1.0"
 
-jest@*:
+jest@^24.9.0:
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/jest/-/jest-24.9.0.tgz#987d290c05a08b52c56188c1002e368edb007171"
   integrity sha512-YvkBL1Zm7d2B1+h5fHEOdyjCG+sGMz4f8D86/0HiqJ6MB4MnDc8FgP5vdWsGnemOQro7lnYo8UakZ3+5A0jxGw==
@@ -2959,10 +2959,10 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
-lint-staged@^9.2.5:
-  version "9.2.5"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-9.2.5.tgz#5a3e1e0a539a403bd7f88542bc3d34ce52efdbb3"
-  integrity sha512-d99gTBFMJ29159+9iRvaMEQstmNcPAbQbhHSYw6D/1FncvFdIj8lWHztaq3Uq+tbZPABHXQ/fyN7Rp1QwF8HIw==
+lint-staged@9.4.0:
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-9.4.0.tgz#dd4abcc9a82539fd290aed1584e3241b8f8af687"
+  integrity sha512-jTu1KoGiGTSffM539wK+3igVqDGVsby3KwDBaXL471YndahkjnavLX+R5Nsk49JwklyMo0ZAXay1BaoyA6d2Jw==
   dependencies:
     chalk "^2.4.2"
     commander "^2.20.0"
@@ -3249,10 +3249,10 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-modern-node@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/modern-node/-/modern-node-2.4.0.tgz#4694bedcf14f40daec1c83ce53f8502e08d90176"
-  integrity sha512-il+7SM7kFIhPd6WL8PPLRMjhW3tAfezLyVN4A7teCeU2MJrfiPCNEVXBMLJFM2bqCWSA5UmQYfCEojYuooowpQ==
+modern-node@^2.5.0:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/modern-node/-/modern-node-2.5.1.tgz#327f3b41f8f39921059f5523b1e73992ef253cf6"
+  integrity sha512-6zzUqt0WTMKXx/56wAt3qw/WaG64CRBQtavAqhk8XV4x7uxgPCAARoqvszreSv61xc8kMTL3psPf7LySrz0tsg==
   dependencies:
     camelcase "^5.3.1"
     chalk "^2.4.2"
@@ -3260,10 +3260,9 @@ modern-node@^2.4.0:
     fast-glob "^3.0.4"
     find-up "^4.1.0"
     fs-extra "^8.1.0"
-    jest "*"
+    jest "^24.9.0"
     jest-watch-typeahead "^0.4.0"
-    lint-staged "^9.2.5"
-    prettier-standard "^14.0.5"
+    prettier-standard "^15.0.1"
     read-pkg-up "^6.0.0"
     username "^5.1.0"
 
@@ -3662,11 +3661,6 @@ parent-module@^1.0.0:
   dependencies:
     callsites "^3.0.0"
 
-parse-diff@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/parse-diff/-/parse-diff-0.5.1.tgz#18b3e82a0765ac1c8796e3854e475073a691c4fb"
-  integrity sha512-/qXjo9x/pFa5bVk/ZXaJD0yr3Tf3Yp6MWWMr4vnUmumDrE0yoE6YDH2A8vmcCD/Ko3tW2o0X+zGYh2zMLXshsg==
-
 parse-filepath@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/parse-filepath/-/parse-filepath-1.0.2.tgz#a632127f53aaf3d15876f5872f3ffac763d6c891"
@@ -3841,22 +3835,22 @@ prelude-ls@~1.1.2:
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=
 
-prettier-standard@^14.0.5:
-  version "14.0.5"
-  resolved "https://registry.yarnpkg.com/prettier-standard/-/prettier-standard-14.0.5.tgz#99e62095de53e500a3b8999a975022c2f6289abd"
-  integrity sha512-dKnQJ9omdybnK958nbmktsNbyznScSw74zU2oG764kQ9v83bXg8ox8zxe4P3OdB8uIQMPrQMIBH5RaLY6DoaQQ==
+prettier-standard@^15.0.1:
+  version "15.0.1"
+  resolved "https://registry.yarnpkg.com/prettier-standard/-/prettier-standard-15.0.1.tgz#c07f3c31852782a9d213535ecb15a24e284ae587"
+  integrity sha512-uT/+SeoioaGh1+pyY28P5mYJTlhzdPRScYJ1SlrhLwuB6ejP06h1SaBpCLae35zoIP7Tf4YM/px8b3bClWwVrg==
   dependencies:
     chalk "^2.4.2"
     diff "^4.0.1"
-    eslint "6.2.2"
+    eslint "^6.4.0"
     execa "^2.0.4"
     find-up "^4.1.0"
     get-stdin "^7.0.0"
     globby "^6.1.0"
     ignore "^3.3.7"
+    lint-staged "9.4.0"
     mri "^1.1.4"
     multimatch "^3.0.0"
-    parse-diff "^0.5.1"
     prettierx "0.7.1"
 
 prettierx@0.7.1:
