@@ -13,6 +13,7 @@
 - [x] quickly rollback recent migrations
 - [x] redo feature: rollback and migrate again for quick testing
 - [x] runs migrations in transactions
+- [x] allow send data to migration files (payload)
 - [x] friendly ui 🌹
 
 ## Installation
@@ -97,6 +98,39 @@ async function run() {
 }
 
 run()
+```
+
+Example with payload:
+
+```es6
+const flags = {
+  payload: {
+    schemaBranch: 'devel'
+  },
+  config: {
+    client: "postgresql",
+    connection: {
+      host: process.env.PGHOST,
+      port: process.env.PGPORT,
+      database: process.env.PGDATABASE,
+      user: process.env.PGUSER,
+      password: process.env.PGPASSWORD
+    },
+    migrations: {
+      extension: "ts",
+      loadExtensions: [".ts"],
+      directory: "./migrations/data_branch",
+      tableName: `public.migration_branch_devel`,
+    }
+  }
+};
+const result = await knexMigrate('up', flags);
+```
+and migration file:
+```es6
+exports.up = async (knex, promise, payload) => {
+  return knex.raw(`CREATE OR REPLACE VIEW "${payload.schemaBranch}".invoice_type AS SELECT 1`);
+};
 ```
 
 ## Thank you
