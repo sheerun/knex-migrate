@@ -19,6 +19,7 @@ function normalizeFlags (flags) {
     flags.cwd = dirname(flags.migrations)
   }
 
+  flags.payload = flags.payload || null;
   flags.cwd = flags.cwd || process.cwd()
   flags.knexfile = flags.knexfile || 'knexfile.js'
 
@@ -115,9 +116,9 @@ function umzugKnex (flags, connection) {
       pattern: /^\d+_.+\.[j|t]s$/,
       wrap: fn => (knex, Promise) => {
         if (flags.raw) {
-          return Promise.resolve(fn(knex, Promise))
+          return Promise.resolve(fn(knex, Promise, flags.payload))
         } else {
-          return knex.transaction(tx => Promise.resolve(fn(tx, Promise)))
+          return knex.transaction(tx => Promise.resolve(fn(tx, Promise, flags.payload)))
         }
       }
     }
