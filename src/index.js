@@ -21,7 +21,7 @@ function normalizeFlags (flags) {
 
   flags.cwd = flags.cwd || process.cwd()
   flags.knexfile =
-    flags.knexfile || `knexfile.${flags.typescript ? 'ts' : 'js'}`
+    flags.knexfile || (flags.typescript ? 'knexfile.ts' : 'knexfile.js')
 
   flags.knexfile = resolve(flags.cwd, flags.knexfile)
 
