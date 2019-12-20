@@ -20,7 +20,8 @@ function normalizeFlags (flags) {
   }
 
   flags.cwd = flags.cwd || process.cwd()
-  flags.knexfile = flags.knexfile || 'knexfile.js'
+  flags.knexfile =
+    flags.knexfile || (flags.typescript ? 'knexfile.ts' : 'knexfile.js')
 
   flags.knexfile = resolve(flags.cwd, flags.knexfile)
 
@@ -188,19 +189,21 @@ function _ensureFolder (dir) {
 }
 
 function _generateStubTemplate (flags) {
-  const stubPath = flags.stub || resolve(__dirname, 'stub', 'js.stub')
+  const stubTemplate = flags.typescript ? 'ts.stub' : 'js.stub'
+  const stubPath = flags.stub || resolve(__dirname, 'stub', stubTemplate)
   return Promise.promisify(fs.readFile, { context: fs })(stubPath).then(stub =>
     template(stub.toString(), { variable: 'd' })
   )
 }
 
-function _writeNewMigration (dir, name, tmpl) {
-  if (name[0] === '-') name = name.slice(1)
-  const filename = yyyymmddhhmmss() + '_' + name + '.js'
+function _writeNewMigration (dir, flags, tmpl) {
+  if (flags.name[0] === '-') flags.name = flags.name.slice(1)
+  const filename =
+    yyyymmddhhmmss() + '_' + flags.name + (flags.typescript ? '.ts' : '.js')
   const variables = {}
-  if (name.indexOf('create_') === 0) {
-    console.log(name)
-    variables.tableName = name.slice(7)
+  if (flags.name.indexOf('create_') === 0) {
+    console.log(flags.name)
+    variables.tableName = flags.name.slice(7)
   }
   return Promise.promisify(fs.writeFile, { context: fs })(
     resolve(dir, filename),
@@ -253,11 +256,7 @@ async function knexMigrate (command, flags, progress) {
 
       await _ensureFolder(migrationsPath)
       const template = await _generateStubTemplate(flags)
-      const name = await _writeNewMigration(
-        migrationsPath,
-        flags.name,
-        template
-      )
+      const name = await _writeNewMigration(migrationsPath, flags, template)
 
       return relative(flags.cwd, name)
     },

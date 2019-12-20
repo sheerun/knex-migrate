@@ -30,6 +30,7 @@ Global options:
   --env         Specify environment ($KNEX_ENV || $NODE_ENV || 'development')
   --raw         Disable transactions
   --verbose     Be more verbose
+  --typescript  Run in Typescript mode ($cwd/knexfile.ts lookup, Typescript compatible migration generation)
 
 As a convenience, you can skip --to flag, and just provide migration name.
 
