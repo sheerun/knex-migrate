@@ -53,6 +53,7 @@ Global options:
   --env         Specify environment ($KNEX_ENV || $NODE_ENV || 'development')
   --raw         Disable transactions
   --verbose     Be more verbose
+  --typescript  Run in Typescript mode ($cwd/knexfile.ts lookup, Typescript compatible migration generation)
 
 As a convenience, you can skip --to flag, and just provide migration name.
 
@@ -79,7 +80,7 @@ import knexMigrate from 'knex-migrate'
 // It has following signature:
 // knexMigrate(command: String, flags: Object, progress: Function)
 
-async function run() {
+async function run () {
   // Action can be: migrate, revert. Migration is migration name. For example:
   // Doing migrate on 20170427093232_add_users
   // Doing revert on 20170427093232_add_users
