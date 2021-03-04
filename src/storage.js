@@ -5,7 +5,8 @@ function tableDoesNotExist (err, table) {
   return (
     err.code === 'ER_NO_SUCH_TABLE' ||
     new RegExp(`relation "${table}" does not exist`).test(err.message) ||
-    new RegExp(`no such table: ${table}`).test(err.message)
+    new RegExp(`no such table: ${table}`).test(err.message) ||
+    new RegExp(`Invalid object name '${table}'`).test(err.message)
   )
 }
 
