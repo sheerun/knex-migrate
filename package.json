@@ -21,7 +21,7 @@
     "knex": "*"
   },
   "devDependencies": {
-    "knex": "^0.19.5",
+    "knex": "^2.4.0",
     "modern-node": "^2.5.0"
   },
   "scripts": {
