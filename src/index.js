@@ -1,14 +1,19 @@
 #!/usr/bin/env node
 
-const { resolve, dirname, isAbsolute, relative } = require('path')
-const { existsSync } = require('fs')
-const reqFrom = require('req-from')
-const Umzug = require('umzug')
-const fs = require('fs')
-const mkdirp = require('mkdirp')
-const { maxBy, minBy, filter, omitBy, isNil, template } = require('lodash')
-const prettyjson = require('prettyjson')
-const Promise = require('bluebird')
+import path from 'path'
+import fs from 'fs'
+import { fileURLToPath } from 'url'
+import reqFrom from 'req-from'
+import Umzug from 'umzug'
+import KnexStorage from './storage.js'
+import * as mkdirp from 'mkdirp'
+import lodash from 'lodash'
+import prettyjson from 'prettyjson'
+import Promise from 'bluebird'
+
+const { resolve, dirname, isAbsolute, relative } = path
+const { existsSync } = fs
+const { maxBy, minBy, filter, omitBy, isNil, template } = lodash
 
 function normalizeFlags (flags) {
   if (isAbsolute(flags.knexfile || '') && !flags.cwd) {
@@ -28,7 +33,7 @@ function normalizeFlags (flags) {
     flags.env || process.env.KNEX_ENV || process.env.NODE_ENV || 'development'
 }
 
-function knexInit (flags) {
+async function knexInit (flags) {
   normalizeFlags(flags)
 
   const knex = reqFrom.silent(flags.cwd, 'knex')
@@ -47,7 +52,7 @@ function knexInit (flags) {
     config = flags.config
   } else {
     try {
-      config = require(flags.knexfile)
+      config = await import(flags.knexfile)
     } catch (err) {
       if (/Cannot find module/.test(err.message)) {
         console.error(`No knexfile at '${flags.knexfile}'`)
@@ -107,12 +112,12 @@ function knexInit (flags) {
 
 function umzugKnex (flags, connection) {
   return new Umzug({
-    storage: resolve(__dirname, 'storage'),
+    storage: new KnexStorage({ connection }),
     storageOptions: { connection },
     migrations: {
       params: [connection, Promise],
       path: flags.migrations,
-      pattern: /^\d+_.+\.[j|t]s$/,
+      pattern: /^\d+_.+\.((cj)|[j|t])s$/,
       wrap: fn => (knex, Promise) => {
         if (flags.raw) {
           return Promise.resolve(fn(knex, Promise))
@@ -188,6 +193,8 @@ function _ensureFolder (dir) {
 }
 
 function _generateStubTemplate (flags) {
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = path.dirname(__filename)
   const stubPath = flags.stub || resolve(__dirname, 'stub', 'js.stub')
   return Promise.promisify(fs.readFile, { context: fs })(stubPath).then(stub =>
     template(stub.toString(), { variable: 'd' })
@@ -196,7 +203,7 @@ function _generateStubTemplate (flags) {
 
 function _writeNewMigration (dir, name, tmpl) {
   if (name[0] === '-') name = name.slice(1)
-  const filename = yyyymmddhhmmss() + '_' + name + '.js'
+  const filename = yyyymmddhhmmss() + '_' + name + '.cjs'
   const variables = {}
   if (name.indexOf('create_') === 0) {
     console.log(name)
@@ -229,8 +236,7 @@ async function knexMigrate (command, flags, progress) {
   flags = flags || {}
   progress = progress || function () {}
 
-  const umzug = umzugKnex(flags, knexInit(flags))
-
+  const umzug = umzugKnex(flags, await knexInit(flags))
   const debug = action => migration => {
     progress({
       action,
@@ -314,9 +320,8 @@ async function knexMigrate (command, flags, progress) {
   try {
     return await api[command].apply(null, flags)
   } finally {
-    umzug.storage.knex.destroy()
+    ;(await umzug.storage.knex).destroy()
   }
 }
 
-module.exports = knexMigrate
-module.exports.default = knexMigrate
+export default knexMigrate

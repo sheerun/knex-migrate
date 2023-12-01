@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
-const minimist = require('minimist')
-const { isNil } = require('lodash')
-const knexMigrate = require('./')
+import minimist from 'minimist'
+import lodash from 'lodash'
+import knexMigrate from './index.js'
+
+const { isNil } = lodash
 
 const cliHelp = `
 Usage
